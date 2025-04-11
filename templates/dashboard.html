@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Task Boards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #83a4d4, #b6fbff);
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 60px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #ecf0f1;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        a {
+            text-decoration: none;
+            color: #2980b9;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .creator-marker {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        form {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 60%;
+            max-width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .logout {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #e74c3c;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .logout:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to your Dashboard</h1>
+
+        <h2>Your Boards</h2>
+        {% if boards %}
+            <ul>
+            {% for board in boards %}
+                <li>
+                    <span>
+                        <a href="/board/{{ board.id }}">{{ board.title }}</a>
+                        {% if board.owner == session['user_id'] %}
+                            <span class="creator-marker">⭐ (You are the creator)</span>
+                        {% endif %}
+                    </span>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p style="text-align:center;">No boards yet. Create one below!</p>
+        {% endif %}
+
+        <h3>Create New Board</h3>
+        <form action="/create_board" method="POST">
+            <input type="text" name="title" placeholder="Board Title" required>
+            <button type="submit">Create Board</button>
+        </form>
+
+        <a class="logout" href="/logout">Logout</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Task Manager</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
+
+    <!-- Firebase SDK -->
+    <script type="module" src="{{ url_for('static', filename='firebase-login.js') }}"></script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        input[type="email"], input[type="password"] {
+            padding: 12px;
+            margin: 10px 0;
+            width: 250px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        button {
+            background-color: #ffffff;
+            color: #764ba2;
+            border: none;
+            padding: 12px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #f1f1f1;
+            transform: scale(1.05);
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Manager Login</h1>
+
+        <input type="email" id="email" placeholder="Email"><br>
+        <input type="password" id="password" placeholder="Password"><br>
+
+        <button onclick="login()">Login</button>
+        <button onclick="signup()">Sign Up</button>
+    </div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+        const auth = getAuth();
+
+        window.login = function () {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            window.firebaseLogin(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    fetch("/set_user", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "uid=" + user.uid
+                    }).then(() => {
+                        window.location.href = "/dashboard";
+                    });
+                })
+                .catch((error) => {
+                    alert("Login failed: " + error.message);
+                });
+        }
+
+        window.signup = function () {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            window.firebaseSignup(email, password)
+                .then(() => {
+                    alert("Signup successful. You can log in now!");
+                })
+                .catch((error) => {
+                    alert("Signup failed: " + error.message);
+                });
+        }
+    </script>
+</body>
+</html>
