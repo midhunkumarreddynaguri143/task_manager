@@ -1,3 +1,7 @@
+from flask import Flask, render_template, request, redirect, session, url_for, flash
+from firebase_admin import credentials, firestore, initialize_app
+import firebase_admin
+from datetime import datetime
 
 # 🔐 Firebase setup
 cred = credentials.Certificate("firebase_config.json")
